@@ -1,0 +1,43 @@
+{
+  "name": "rest_user",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "dev": "nodemon",
+    "lint": "eslint .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "data.json"
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.59.2",
+    "@typescript-eslint/parser": "^8.59.2",
+    "bcrypt": "^6.0.0",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.5.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3",
+    "uuid": "^14.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/bcrypt": "^6.0.0",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.6.0",
+    "eslint": "^10.3.0",
+    "globals": "^17.6.0",
+    "i": "^0.3.7",
+    "jiti": "^2.6.1",
+    "nodemon": "^3.1.14",
+    "npm": "^11.13.0",
+    "typescript-eslint": "^8.59.2"
+  }
+}
