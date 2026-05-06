@@ -2,6 +2,7 @@ import {  type Request, type Response } from "express";
 import fs from "fs";
 import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
+
 interface reqData {
   id: string;
   name: string;
@@ -19,7 +20,7 @@ interface password {
 export const getData = (req: Request, res: Response) => {
   try {
     fs.readFile(
-      "/Users/sudhirkumar/Roadmap-celestial/week 3 Day 1 Rest API/rest_user/data.json",
+      "data.json",
       "utf-8",
       (err, data: string) => {
         if (err) {
@@ -54,6 +55,7 @@ export const getData = (req: Request, res: Response) => {
 
 export const postData = async (req: Request, res: Response) => {
   try {
+    const remaining=res.getHeader("RateLimit-Remaining");
     const bodyData: reqData = req.body;
     const { password }: password = bodyData;
     const { email }: password = req.body;
@@ -76,7 +78,7 @@ export const postData = async (req: Request, res: Response) => {
         return res.status(409).json({
           success: false,
           message: "Email already exist try with new email",
-
+          attemptLeft:remaining
         });
       }
       pushData.push(bodyData);
@@ -156,6 +158,7 @@ export const updateData = async (req: Request, res: Response) => {
       res.status(500).json({
         success:false,
         message:error.message || "internal server error"
+        
       });
     }
   }
