@@ -23,6 +23,17 @@ interface updateBlog{
     status?:string;
 }
 
+interface decode{
+    name?:string;
+    email?:string
+    id?:string;
+    iat?:number;
+    exp?:number
+}
+interface RequestWithUserRole extends Request {
+    user?: decode,
+}
+
 export const getPost=(req:Request,res:Response)=>{
   try {
     const limit:number=Number(req.query.limit);
@@ -55,10 +66,12 @@ export const getPost=(req:Request,res:Response)=>{
   }
 };
 
-export const addPost=(req:Request,res:Response)=>{
+export const addPost=(req:RequestWithUserRole,res:Response)=>{
   try {
-    const userId:string=String(req.params.userId);
+    // const userId:string=String(req.params.userId);
     const bodyData:blogType=req.body;
+    const tokenId:decode|undefined=req.user;
+    const userId:string=String(tokenId?.id);
     const id:string=uuidv4();
     bodyData.author_id=userId;
     bodyData.post_id=id;
@@ -91,9 +104,11 @@ export const addPost=(req:Request,res:Response)=>{
     }
   }
 };
-export const editPost=(req:Request,res:Response)=>{
+
+export const editPost=(req:RequestWithUserRole,res:Response)=>{
   try {
-    const author_id:string=String(req.query.author_id);
+    const tokenId:decode|undefined=req.user;
+    const author_id:string=String(tokenId?.id);
     const blog_id:string=String(req.query.blog_id);
     const bodyData:updateBlog=req.body;
     if(bodyData.post_id!=undefined || bodyData.author_id!=undefined){
@@ -102,8 +117,8 @@ export const editPost=(req:Request,res:Response)=>{
         message:"you cannot update author id and post id"
       });
     }
-    if(author_id=="undefined" || blog_id=="undefined"){
-      return res.status(500).json({
+    if(blog_id=="undefined"){
+      return res.status(400).json({
         success:false,
         message:"please provide author_id and blog_id through params to update record"
       });
@@ -157,12 +172,13 @@ export const editPost=(req:Request,res:Response)=>{
   }
 };
 
-export const deletePost=(req:Request,res:Response)=>{
+export const deletePost=(req:RequestWithUserRole,res:Response)=>{
   try {
-    const author_id:string=String(req.query.author_id);
+    const tokenId:decode|undefined=req.user;
+    const author_id:string=String(tokenId?.id);
     const blog_id:string=String(req.query.blog_id);
-    if(author_id=="undefined" || blog_id=="undefined"){
-      return res.status(404).json({
+    if(blog_id=="undefined"){
+      return res.status(400).json({
         success:false,
         message:"please provide author_id and blog_id with query params"
       });
@@ -191,7 +207,7 @@ export const deletePost=(req:Request,res:Response)=>{
           if(err){
             return res.status(500).json({
               success:false,
-              message:"no data found with provided blog_id"
+              message:"Error while writing file"
             });
           }
         });
@@ -211,11 +227,12 @@ export const deletePost=(req:Request,res:Response)=>{
   }
 };
 
-export const getPostByUser=(req:Request,res:Response)=>{
+export const getPostByUser=(req:RequestWithUserRole,res:Response)=>{
   try {
-    const author_id:string=String(req.query.author_id);
+    const tokenId:decode|undefined=req.user;
+    const author_id:string=String(tokenId?.id);
     if(author_id=="undefined"){
-      return res.status(404).json({
+      return res.status(400).json({
         success:false,
         message:"please provide author id"
       });

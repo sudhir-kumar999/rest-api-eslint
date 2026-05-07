@@ -7,5 +7,32 @@
     "place": "Noida",
     "city": "hajipur",
     "id": "c63b0983-f7d1-4593-8046-d4c6cfaf25d8"
+  },
+  {
+    "name": "sudhir kumar",
+    "age": 25,
+    "email": "sudhir@gmail.com",
+    "password": "$2b$10$cl2GpPtUv0ceuAYn7KcU6OY7MrDetweBrPmvbpsGoZYhA2WzWXFgy",
+    "place": "Noida",
+    "city": "hajipur",
+    "id": "9cf635e7-5894-4b40-b3a5-7ca1229e2adf"
+  },
+  {
+    "name": "sudhir kumar",
+    "age": 25,
+    "email": "sudhirs@gmail.com",
+    "password": "$2b$10$WJAFmt9AbwyuCYF/MNxX4.yu9zafVJvTH4GN266waksMbcGzO3HvC",
+    "place": "Noida",
+    "city": "hajipur",
+    "id": "140ccbe8-26fa-4f09-9612-935b4137abe3"
+  },
+  {
+    "name": "sudhir kumar",
+    "age": 33,
+    "email": "sudhirskg@gmail.com",
+    "password": "$2b$10$1vbrrYtWP7t703tSW5y/kuIbUxF.UPxZt2GtdVH1k/.ZASyMNBtmm",
+    "place": "Noida",
+    "city": "Noida",
+    "id": "f5606d04-b512-4022-bac3-e5cf8537d7bf"
   }
 ]

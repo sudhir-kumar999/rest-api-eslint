@@ -10,7 +10,8 @@
   },
   "nodemonConfig": {
     "ignore": [
-      "data.json"
+      "data.json",
+      "blog.json"
     ]
   },
   "keywords": [],
@@ -21,8 +22,11 @@
     "@typescript-eslint/eslint-plugin": "^8.59.2",
     "@typescript-eslint/parser": "^8.59.2",
     "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-rate-limit": "^8.5.0",
+    "jsonwebtoken": "^9.0.3",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3",
     "uuid": "^14.0.0"
@@ -30,8 +34,11 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/bcrypt": "^6.0.0",
+    "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^25.6.0",
+    "@types/passport": "^1.0.17",
     "eslint": "^10.3.0",
     "globals": "^17.6.0",
     "i": "^0.3.7",

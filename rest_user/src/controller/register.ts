@@ -2,7 +2,9 @@ import {  type Request, type Response } from "express";
 import fs from "fs";
 import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
-
+import { generateAccessToken, generateRefreshToken } from "../utils/generateToken.ts";
+import dotenv from "dotenv";
+dotenv.config();
 interface reqData {
   id: string;
   name: string;
@@ -15,6 +17,17 @@ interface reqData {
 interface password {
   password: string;
   email: string;
+}
+
+interface decode{
+    name:string;
+    email:string
+    id:string;
+    iat:number;
+    exp:number
+}
+interface RequestWithUserRole extends Request {
+    user?: decode,
 }
 
 export const getData = (req: Request, res: Response) => {
@@ -52,11 +65,74 @@ export const getData = (req: Request, res: Response) => {
     }
   }
 };
+interface valid{
+  email:string,
+  password:string
+}
 
-export const postData = async (req: Request, res: Response) => {
+export const loginController=((req:Request,res:Response)=>{
+  const {email,password}:valid=req.body;
+  fs.readFile("data.json","utf-8",async(err,data)=>{
+    if(!data){
+      return res.status(404).json({
+        success:false,
+        message:"No data found inside DB"
+      });
+    }
+    const readData:reqData[]=JSON.parse(data);
+    const emailCheck=readData.find((ele)=>ele.email==email);
+    const hashed:string=String(emailCheck?.password);
+    if(emailCheck==undefined){
+      return res.status(404).json({
+        success:false,
+        message:"No email found. kindly sign up or enter right email"
+      });
+    }
+    const isValidPass=await bcrypt.compare(password,hashed);
+    if(!isValidPass){
+      return res.status(200).json({
+        success:true,
+        message:"Wrong password. Try again with correct password"
+      });
+    }
+
+    const name:string=String(emailCheck.name);
+    const gmail:string=String(emailCheck.email);
+    const id:string=String(emailCheck.id);
+      
+    const payload={
+      name:name,
+      email:gmail,
+      id:id
+    };
+    const secret_access_key:string=String(process.env.ACCESS_KEY);
+    const accessToken=generateAccessToken(payload,secret_access_key);
+    const payload2={
+      id:id
+    };
+      
+    res.cookie("accessToken",accessToken,{
+      httpOnly:true
+    });
+
+    const secret_refresh_key:string=String(process.env.REFRESH_KEY);
+    const refreshToken=generateRefreshToken(payload2,secret_refresh_key);
+    res.cookie("refreshToken",refreshToken,{
+      httpOnly:true
+    });
+
+    return res.status(200).json({
+      success:true,
+      message:" login successful"
+    });
+  });
+});
+
+export const postData = async (req: RequestWithUserRole, res: Response) => {
   try {
     const remaining=res.getHeader("RateLimit-Remaining");
     const bodyData: reqData = req.body;
+    // const userId:string=S
     const { password }: password = bodyData;
     const { email }: password = req.body;
     const strPassword = password.toString();
@@ -105,11 +181,12 @@ export const postData = async (req: Request, res: Response) => {
   }
 };
 
-export const updateData = async (req: Request, res: Response) => {
+export const updateData = async (req: RequestWithUserRole, res: Response) => {
   try {
     let resData:reqData[] = [];
     const bodyData = req.body;
-    const id: string = String(req.params.id);
+    const tokenId:decode|undefined=req.user;
+    const author_id:string=String(tokenId?.id);
     if(bodyData.email!=undefined){
       return res.status(422).json({
         success:true,
@@ -125,7 +202,7 @@ export const updateData = async (req: Request, res: Response) => {
       }
       if (data) {
         resData = JSON.parse(data);
-        const item:number = resData.findIndex((ele: reqData) => ele.id == id);
+        const item:number = resData.findIndex((ele: reqData) => ele.id == author_id);
         if (item!=-1) {
           resData[item]={...resData[item],...bodyData};
           fs.writeFile("data.json",JSON.stringify(resData),(err)=>{
@@ -167,6 +244,7 @@ export const updateData = async (req: Request, res: Response) => {
 export const deleteData = (req: Request, res: Response) => {
   try {
     const id: string = String(req.params.id);
+    
     fs.readFile("data.json", "utf-8", (err, data) => {
       if (err) {
         return res.status(500).json({
