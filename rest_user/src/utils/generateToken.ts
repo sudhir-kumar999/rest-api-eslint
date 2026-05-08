@@ -25,5 +25,3 @@ export const generateRefreshToken=(payload:payload2,secret:string)=>{
 export const verifyRefToken=(token:string,secret:string)=>{
   return jwt.verify(token,secret);
 };
-
-console.log("first");

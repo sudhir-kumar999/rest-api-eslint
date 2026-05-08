@@ -68,7 +68,6 @@ export const getPost=(req:Request,res:Response)=>{
 
 export const addPost=(req:RequestWithUserRole,res:Response)=>{
   try {
-    // const userId:string=String(req.params.userId);
     const bodyData:blogType=req.body;
     const tokenId:decode|undefined=req.user;
     const userId:string=String(tokenId?.id);
