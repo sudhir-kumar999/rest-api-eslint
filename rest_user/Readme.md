@@ -38,7 +38,7 @@ npm run dev
 
 
 # Download ZIP file and extract it then open that folder into vs code or other code editor
-then go to my project in terminal
-cd folder-name
-npm install 
-npm run dev
+-->then go to my project in terminal
+-->cd folder-name
+-->npm install 
+-->npm run dev
