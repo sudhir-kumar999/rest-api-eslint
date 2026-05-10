@@ -34,5 +34,54 @@
     "place": "Noida",
     "city": "Noida",
     "id": "f5606d04-b512-4022-bac3-e5cf8537d7bf"
+  },
+  {
+    "name": "sudhir kumar",
+    "age": 25,
+    "email": "sks2001may@gmail.com",
+    "password": "$2b$10$Z6/UmIKaZh16WwmFx//NCOpsLXDPzN1WCzHoYFWdAfOBPMA6kVe7i",
+    "place": "Bihar",
+    "city": "hajipur",
+    "id": "0ed500fd-65fe-4295-a4cf-7eef188da83d"
+  },
+  {
+    "name": "sudhir kumar",
+    "age": 25,
+    "email": "skss2001may@gmail.com",
+    "password": "$2b$10$ibXjwiN1.gWnPQe4Kpy7weLjmzbeKvqif9Rc8mASwplmwCUp3W73G",
+    "place": "Bihar",
+    "city": "hajipur",
+    "id": "7095aa9f-c147-4b61-80be-817f5e37ec98"
+  },
+  {
+    "name": "sudhir kumar",
+    "age": 25,
+    "email": "sk2001may@gmail.com",
+    "password": "$2b$10$kEvL8WtVuhn5.aL0FUGYUOXZKxwkZCsmACufZvfx/gpBtlZjRRg5i",
+    "place": "Bihar",
+    "city": "hajipur",
+    "id": "3af09167-aeb2-45c9-aec3-d882fca01d43",
+    "otp": "",
+    "otpVerified": true
+  },
+  {
+    "name": "sudhir kumar",
+    "age": 25,
+    "email": "sksswd2001may@gmail.com",
+    "password": "$2b$10$ui363TKD1oM6V8pB4O0TPOb.dH/x6cejqKf8NrU6OLB77S8ds4SkO",
+    "place": "Bihar",
+    "city": "hajipur",
+    "id": "68240b90-7b3d-41c6-8147-ed3bd8f56070"
+  },
+  {
+    "name": "sudhir kumar",
+    "age": 25,
+    "email": "skssd2001may@gmail.com",
+    "password": "$2b$10$oGoMe9zR5YIbji1/bP7hjuWmOPc71FKbnsfj6kZ7azioTnx3XdP7O",
+    "place": "Bihar",
+    "city": "hajipur",
+    "id": "b958b21d-727c-422a-a1ca-43720dfe02ef",
+    "otp": "376621",
+    "otpVerified": false
   }
 ]
