@@ -26,10 +26,10 @@ interface reqData {
   otp?: string;
   otpVerified: boolean;
 }
-interface password {
-  password: string;
-  email: string;
-}
+// interface password {
+//   password: string;
+//   email: string;
+// }
 
 interface decode {
   name: string;
@@ -40,6 +40,26 @@ interface decode {
 }
 interface RequestWithUserRole extends Request {
   user?: decode;
+}
+
+const stringRegex = /^[A-Za-z ]+$/;
+
+const numberRegex = /^[0-9]+$/;
+
+const emailRegex = /^[=a-zA-Z0-9._%+-]+@gmail.com$/;
+
+interface otp {
+  email: string;
+  otp: string;
+  attempt: number;
+  isVerified: boolean;
+  createdAt: number;
+  expiredAt: number;
+}
+
+interface valid {
+  email: string;
+  password: string;
 }
 
 export const getData = (req: Request, res: Response) => {
@@ -57,7 +77,7 @@ export const getData = (req: Request, res: Response) => {
       }
       if (data) {
         const parsed = JSON.parse(data);
-        const sendData:reqData[]=parsed.slice(offset, last);
+        const sendData: reqData[] = parsed.slice(offset, last);
         return res.json({
           success: true,
           message: "data fetched of all user",
@@ -78,14 +98,16 @@ export const getData = (req: Request, res: Response) => {
     }
   }
 };
-interface valid {
-  email: string;
-  password: string;
-}
 
 export const loginController = (req: Request, res: Response) => {
   try {
     const { email, password }: valid = req.body;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "email is not valid enter valid email",
+      });
+    }
     fs.readFile("data.json", "utf-8", async (err, data) => {
       if (!data) {
         return res.status(200).json({
@@ -147,24 +169,35 @@ export const loginController = (req: Request, res: Response) => {
           message: "Failed when send Email",
         });
       }
-
-      const otpData = readData.filter((ele) => ele.email != gmail);
-      emailCheck.otp = String(otp);
-      emailCheck.otpVerified = false;
-      otpData.push(emailCheck);
-
-      fs.writeFile("data.json", JSON.stringify(otpData), (err) => {
-        if (err) {
-          return res.status(500).json({
-            success: false,
-            message: err.message || "error occurred at writing file",
-          });
+      //  new opt table
+      fs.readFile("otp.json", "utf-8", (err, data) => {
+        let otpData: otp[] = [];
+        if (!err && data) {
+          otpData = JSON.parse(data);
         }
-      });
-
-      return res.status(200).json({
-        success: true,
-        message: `OTP sent successfully to your Gmail ${gmail}`,
+        otpData = otpData.filter((ele) => ele.email != emailCheck.email);
+        const curTime = Date.now();
+        const newData: otp = {
+          email: emailCheck.email,
+          otp: String(otp),
+          attempt: 0,
+          isVerified: false,
+          createdAt: curTime,
+          expiredAt: curTime + 10 * 60 * 1000,
+        };
+        otpData.push(newData);
+        fs.writeFile("otp.json", JSON.stringify(otpData), (err) => {
+          if (err) {
+            return res.status(500).json({
+              success: false,
+              message: "error at writing otp to db",
+            });
+          }
+          return res.status(200).json({
+            success: true,
+            message: "otp sent successfully",
+          });
+        });
       });
     });
   } catch (error: unknown) {
@@ -180,50 +213,116 @@ export const loginController = (req: Request, res: Response) => {
 export const verifyOtp = (req: RequestWithUserRole, res: Response) => {
   try {
     const userId: string = String(req.user?.id);
-    const bodyOTP = req.body;
+    const { otp } = req.body;
     fs.readFile("data.json", "utf-8", (err, data) => {
+      if (err) {
+        return res.status(500).json({
+          success: false,
+          message: "error while reading user file",
+        });
+      }
       let readData: reqData[] = [];
-      if (!err && data) {
+      if (data) {
         readData = JSON.parse(data);
       }
-      const verifyData = readData.find((ele) => ele.id == userId);
-      if (verifyData == undefined) {
-        return res.status(401).json({
+      const user = readData.find((ele) => ele.id == userId);
+      if (!user) {
+        return res.status(404).json({
           success: false,
-          message: "No email found. kindly sign up or enter right email",
+          message: "no user found",
         });
       }
-
-      if (verifyData.otp != bodyOTP.otp) {
-        return res.status(401).json({
-          success: false,
-          message: "Wrong OTP. Enter the correct OTP",
-        });
-      }
-
-      verifyData.otpVerified = true;
-      verifyData.otp = "";
-
-      const filterData = readData.filter((ele) => ele.id != verifyData.id);
-      filterData.push(verifyData);
-
-      fs.writeFile("data.json", JSON.stringify(filterData), (err) => {
+      fs.readFile("otp.json", "utf-8", (err, data) => {
         if (err) {
           return res.status(500).json({
             success: false,
-            message: err.message || "error occurred at writing file",
+            message: "error while reading otp file",
           });
         }
-      });
-
-      return res.status(200).json({
-        success: true,
-        message: "OTP verifies Successfully",
+        let otpData: otp[] = [];
+        if (data) {
+          otpData = JSON.parse(data);
+        }
+        const otpUser = otpData.find((ele) => ele.email == user.email);
+        if (!otpUser) {
+          return res.status(404).json({
+            success: false,
+            message: "user not found in otp table",
+          });
+        }
+        if (Date.now() > otpUser.expiredAt) {
+          const deleteExpiredOtp = otpData.filter(
+            (ele) => ele.email != otpUser.email,
+          );
+          fs.writeFile("otp.json", JSON.stringify(deleteExpiredOtp), () => {});
+          return res.status(401).json({
+            success: false,
+            message: "otp expired generate new otp",
+          });
+        }
+        if (otpUser.attempt >= 3) {
+          const deleteOtp = otpData.filter((ele) => ele.email != otpUser.email);
+          fs.writeFile("otp.json", JSON.stringify(deleteOtp), () => {});
+          return res.status(401).json({
+            success: false,
+            message: "no attempt left generate new otp",
+          });
+        }
+        if (otpUser.otp != otp) {
+          otpUser.attempt += 1;
+          if (otpUser.attempt >= 3) {
+            const deleteOtp = otpData.filter(
+              (ele) => ele.email != otpUser.email,
+            );
+            fs.writeFile("otp.json", JSON.stringify(deleteOtp), (err) => {
+              if (err) {
+                return res.status(500).json({
+                  success: false,
+                  message: "error while deleting otp",
+                });
+              }
+              return res.status(401).json({
+                success: false,
+                message: "max attempt exceeded otp deleted",
+              });
+            });
+            return;
+          }
+          const updateAttempt = otpData.map((ele) =>
+            ele.email == otpUser.email ? otpUser : ele,
+          );
+          fs.writeFile("otp.json", JSON.stringify(updateAttempt), (err) => {
+            if (err) {
+              return res.status(500).json({
+                success: false,
+                message: "error while updating attempt",
+              });
+            }
+            return res.status(401).json({
+              success: false,
+              message: `wrong otp attempt left ${3 - otpUser.attempt}`,
+            });
+          });
+          return;
+        }
+        const verifyOtp = otpData.filter((ele) => ele.email != otpUser.email);
+        fs.writeFile("otp.json", JSON.stringify(verifyOtp), (err) => {
+          if (err) {
+            return res.status(500).json({
+              success: false,
+              message: "error occured while writing file at delete otp",
+            });
+          }
+          return res.status(200).json({
+            success: true,
+            message: "otp verified success",
+          });
+        });
       });
     });
   } catch (error: unknown) {
     if (error instanceof Error) {
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         message: error.message || "internal server error",
       });
@@ -235,9 +334,41 @@ export const postData = async (req: RequestWithUserRole, res: Response) => {
   try {
     const remaining = res.getHeader("RateLimit-Remaining");
     const bodyData: reqData = req.body;
+    const { name, age, email, password, place, city }: reqData = req.body;
     const now = new Date().toTimeString();
-    const { password }: password = bodyData;
-    const { email }: password = req.body;
+
+    if (!stringRegex.test(name)) {
+      return res.status(400).json({
+        success: false,
+        message: "only letter are allowed in names",
+      });
+    }
+
+    if (!numberRegex.test(age.toString())) {
+      return res.status(400).json({
+        success: false,
+        message: "only number are allowed in age",
+      });
+    }
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "email is not valid enter valid email",
+      });
+    }
+    if (!stringRegex.test(city)) {
+      return res.status(400).json({
+        success: false,
+        message: "only letter are allowed in city",
+      });
+    }
+    if (!stringRegex.test(place)) {
+      return res.status(400).json({
+        success: false,
+        message: "only letter are allowed in place",
+      });
+    }
+
     const strPassword = password.toString();
     const hashed = await bcrypt.hash(strPassword, 10);
     const id = uuidv4();
@@ -292,12 +423,65 @@ export const updateData = async (req: RequestWithUserRole, res: Response) => {
   try {
     let resData: reqData[] = [];
     const bodyData = req.body;
+    const { name, age, email, password, place, city } = req.body;
     const tokenId: decode | undefined = req.user;
     const author_id: string = String(tokenId?.id);
-    if (bodyData.email != undefined) {
+
+    if (name !== undefined) {
+      if (!stringRegex.test(name)) {
+        return res.status(400).json({
+          success: false,
+          message: "only letter are allowed in names",
+        });
+      }
+    }
+
+    if (age !== undefined) {
+      if (!numberRegex.test(age.toString())) {
+        return res.status(400).json({
+          success: false,
+          message: "only number are allowed in age",
+        });
+      }
+    }
+
+    //   if(email!==undefined){
+    //   if(!emailRegex.test(email)){
+    //     return res.status(400).json({
+    //       success:false,
+    //       message:"only letter are allowed in email"
+    //     })
+    //   }
+    // }
+
+    if (city !== undefined) {
+      if (!stringRegex.test(city)) {
+        return res.status(400).json({
+          success: false,
+          message: "only letter are allowed in city",
+        });
+      }
+    }
+
+    if (place !== undefined) {
+      if (!stringRegex.test(place)) {
+        return res.status(400).json({
+          success: false,
+          message: "only letter are allowed in place",
+        });
+      }
+    }
+
+    if (email != undefined) {
       return res.status(422).json({
         success: true,
         message: "Email cannot be change",
+      });
+    }
+    if (password != undefined) {
+      return res.status(422).json({
+        success: true,
+        message: "password cannot be change",
       });
     }
     fs.readFile("data.json", "utf-8", (err, data) => {

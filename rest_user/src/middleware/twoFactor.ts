@@ -28,11 +28,10 @@ export const twoFactor=(req,res,next)=>{
       if(!err && data){
         const checkVerify:reqData[]=JSON.parse(data);
         const filetrData:reqData | undefined=checkVerify.find((ele)=>ele.id==userId);
-        // console.log(filetrData)
         if(filetrData?.otpVerified==false){
           return res.status(403).json({
             success:false,
-            message:"otp is verify otp verify first"
+            message:"otp is not verified, otp verify first"
           });
         }
         next();

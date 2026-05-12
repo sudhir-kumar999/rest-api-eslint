@@ -31,6 +31,11 @@ interface decode {
   exp?: number;
 }
 
+const stringrgx=/^[A-Za-z ]+$/
+// const numberrgx=/^[0-9]+$/
+const contentrgx=/^[A-Za-z0-9 ]+$/
+
+
 interface RequestWithUserRole extends Request {
   user?: decode;
 }
@@ -70,6 +75,7 @@ export const getPost = (req: Request, res: Response) => {
 export const addPost = (req: RequestWithUserRole, res: Response) => {
   try {
     const bodyData: blogType = req.body;
+    const {title,meta_tag,content,category,tags,status}=req.body
     const tokenId: decode | undefined = req.user;
     const userId: string = String(tokenId?.id);
     if (!userId) {
@@ -78,6 +84,61 @@ export const addPost = (req: RequestWithUserRole, res: Response) => {
         message: "No user id found inside token",
       });
     }
+    if(status!=="pending" && status!=="published"){
+      return res.status(400).json({
+        success:false,
+        message:"status can only be pending or published"
+      })
+    }
+
+    if(!stringrgx.test(title)){
+      return res.status(401).json({
+        success:false,
+        message:"title must be string"
+      })
+    }
+
+    if(typeof content!= "string"){
+      return res.status(401).json({
+        success:false,
+        message:"content must be string or number"
+      })
+    }
+    if(typeof meta_tag!= "string"){
+      return res.status(401).json({
+        success:false,
+        message:"meta_tage must be string"
+      })
+    }
+
+    if(!contentrgx.test(meta_tag)){
+      return res.status(401).json({
+        success:false,
+        message:"title must be string"
+      })
+    }
+
+    if(!stringrgx.test(category)){
+      return res.status(401).json({
+        success:false,
+        message:"category must be string"
+      })
+    }
+    if(!Array.isArray(tags)){
+      return res.status(401).json({
+        success:false,
+        message:"tags can only be an array"
+      })
+    }
+    if(tags.length===0){
+      return res.status(401).json({
+        success:false,
+        message:"category must contains some element inside array"
+      })
+    }
+
+
+
     const id: string = uuidv4();
     bodyData.author_id = userId;
     bodyData.post_id = id;
@@ -117,6 +178,7 @@ export const editPost = (req: RequestWithUserRole, res: Response) => {
     const author_id: string = String(tokenId?.id);
     const blog_id: string = String(req.query.blog_id);
     const bodyData: updateBlog = req.body;
+    const {title,meta_tag,content,category,tags,status}=req.body
     if (bodyData.post_id != undefined || bodyData.author_id != undefined) {
       return res.status(500).json({
         success: false,
@@ -130,6 +192,69 @@ export const editPost = (req: RequestWithUserRole, res: Response) => {
           "please provide author_id and blog_id through params to update record",
       });
     }
+
+    if(status!=undefined){
+    if(status!=="pending" && status!=="published"){
+      return res.status(400).json({
+        success:false,
+        message:"status can only be pending or published"
+      })
+    }
+  }
+
+    if(title!=undefined){
+    if(typeof title !=="string"){
+      // if(!stringrgx.test(title)){
+      return res.status(401).json({
+        success:false,
+        message:"title must be string"
+      })
+    // }
+  }
+}
+
+if(content!=undefined){
+    if(typeof content!= "string"){
+      return res.status(401).json({
+        success:false,
+        message:"content must be string "
+      })
+    }
+  }
+
+  if(meta_tag!=undefined){
+    if(typeof meta_tag!=="string"){
+      return res.status(401).json({
+        success:false,
+        message:"title must be string"
+      })
+    }
+  }
+
+  if(category!=undefined){
+    if(!stringrgx.test(category)){
+      return res.status(401).json({
+        success:false,
+        message:"category must be string"
+      })
+    }
+  }
+  if(tags!=undefined){
+    if(!Array.isArray(tags)){
+      return res.status(401).json({
+        success:false,
+        message:"tags can only be an array"
+      })
+    }
+  
+    if(tags.length===0){
+      return res.status(401).json({
+        success:false,
+        message:"category must contains some element inside array"
+      })
+    }
+  }
+
     fs.readFile("blog.json", "utf-8", (err, data) => {
       if (!err && data) {
         const readData: updateBlog[] = JSON.parse(data);

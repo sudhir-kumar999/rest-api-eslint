@@ -74,6 +74,51 @@
     "id": "68240b90-7b3d-41c6-8147-ed3bd8f56070"
   },
   {
+    "name": "Abhimanyu kumar",
+    "age": 25,
+    "email": "aks2001may@gmail.com",
+    "password": "$2b$10$7cJ2fk09Dsmu6JCLX2jKkuCBeWCijCvHNeXI80fGmTtA.ZE6DXd92",
+    "place": "Bihar",
+    "city": "hajipur",
+    "id": "1d3e40dc-99a4-490c-b7ca-ceef56c43f15"
+  },
+  {
+    "name": "Abhimanyu kumar",
+    "age": 25,
+    "email": "akumar2001may@gmail.com",
+    "password": "$2b$10$1Q6GZsV9NFn5Xcnc2JYYqerQTno6AhCE850qmvazR/7a5rCqbO7gO",
+    "place": "Bihar",
+    "city": "hajipur",
+    "id": "a199ba95-d2df-4112-8067-7f68f15d3ec5"
+  },
+  {
+    "name": "Abhimanyu kumar",
+    "age": 25,
+    "email": "akumarsss2001may@gmail.com",
+    "password": "$2b$10$0OG0HeqDU42/oYpJ5wZ1WuROPqccoPy.JVVJhFvZelQn/ChdXhBi2",
+    "place": "Bihar",
+    "city": "hajipur",
+    "id": "9014095d-4670-4ce4-a658-5d5095a77c73"
+  },
+  {
+    "name": "Abhimanyu kumar",
+    "age": 25,
+    "email": "abhimayu.com",
+    "password": "$2b$10$V.13SwDuqHUlxdM6D/NPWOTDuOgFgY7p2HAXQwypCZYibyfPYIcMy",
+    "place": "Bihar",
+    "city": "hajipur",
+    "id": "ae040174-287e-49de-b640-c594d4ddcec7"
+  },
+  {
+    "name": "Abhimanyu kumar",
+    "age": 25,
+    "email": "abhimanyu",
+    "password": "$2b$10$mmNJCrLy8RUt99/hpjzm1e0vHza5p4wNfHlpdHmHi18CZxBOUeewy",
+    "place": "Bihar",
+    "city": "hajipur",
+    "id": "819a56d5-bb3b-432d-9171-c3792c2cdbd9"
+  },
+  {
     "name": "sudhir kumar",
     "age": 25,
     "email": "skssd2001may@gmail.com",
@@ -81,7 +126,45 @@
     "place": "Bihar",
     "city": "hajipur",
     "id": "b958b21d-727c-422a-a1ca-43720dfe02ef",
-    "otp": "376621",
+    "otp": "357688",
     "otpVerified": false
+  },
+  {
+    "name": "sudhir ",
+    "age": "25",
+    "email": "yogeshbuilds@gmail.com",
+    "password": "$2b$10$HWg1.lha8Lo/T5pdTeQUvuRsL7lheTZtnaqZmGhHii8djOrcVIJ9q",
+    "place": "Bihar",
+    "city": "hajipur",
+    "id": "5014d053-7b3d-49db-a498-64237f031d32"
+  },
+  {
+    "name": "Abhimanyu kumar",
+    "age": 22,
+    "email": "yogeshbuilds@yopmail.com",
+    "password": "$2b$10$t1MXoRg8Kbj5TbBEHHY/L.KOt.OgdzNRvDd0PUmijX9KG19tlboFm",
+    "place": "Bihar",
+    "city": "patna",
+    "id": "8f60eaf9-e873-439c-932d-e3bfe9047d7e",
+    "otp": "",
+    "otpVerified": true
+  },
+  {
+    "name": "sudhir ",
+    "age": "25",
+    "email": "sks@gmail.com",
+    "password": "$2b$10$DUoVkLDV38JenzfVsJVUIO1ufKS6inXLmahpaA4tMseLCqlub.BMG",
+    "place": "bihar",
+    "city": "hajipur",
+    "id": "30776d14-a259-4059-893d-78486830bbc3"
+  },
+  {
+    "name": "sudhir ",
+    "age": "25",
+    "email": "sks2001@gmail.com",
+    "password": "$2b$10$EYi20gufZkCEqDm1WMUsc.rA/xPhnrlwpkWMU6sfDXQuCRGDkgRa.",
+    "place": "bihar",
+    "city": "hajipur",
+    "id": "5bc1964e-07b5-44f1-afda-8cc2b0408a56"
   }
 ]
