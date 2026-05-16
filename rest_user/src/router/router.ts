@@ -6,9 +6,9 @@ import { twoFactor } from "../middleware/twoFactor.ts";
 const router=express.Router();
 
 router.get("/getData",checkLogin,getData);
-router.post("/postData",limiter,postData);
+router.post("/signin",limiter,postData);
 router.post("/login",limiter,loginController);
-router.post("/verify",checkLogin,limiter,verifyOtp);
+router.post("/verify",limiter,verifyOtp);
 router.patch("/updateData",checkLogin,twoFactor,updateData);
 router.delete("/deleteData",checkLogin,twoFactor,deleteData);
 

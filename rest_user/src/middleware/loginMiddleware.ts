@@ -20,7 +20,6 @@ export const checkLogin=(req:RequestWithUserRole ,res:Response,next:NextFunction
         message:"No tokens found. login first"
       });
     }
-    // console.log(req.cookies.accessToken, 'acess');
     const secret:string=String(process.env.ACCESS_KEY);
     const decoded=verifyToken(token,secret) as decode;
     if(!decoded){
