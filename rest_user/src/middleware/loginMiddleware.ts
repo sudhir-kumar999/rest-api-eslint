@@ -15,7 +15,7 @@ export const checkLogin=(req:RequestWithUserRole ,res:Response,next:NextFunction
   try {
     const token:string=String(req.cookies.accessToken);
     if(token=="undefined"){
-      return res.status(404).json({
+      return res.status(401).json({
         success:false,
         message:"No tokens found. login first"
       });
@@ -23,7 +23,7 @@ export const checkLogin=(req:RequestWithUserRole ,res:Response,next:NextFunction
     const secret:string=String(process.env.ACCESS_KEY);
     const decoded=verifyToken(token,secret) as decode;
     if(!decoded){
-      return res.status(404).json({
+      return res.status(401).json({
         success:false,
         message:"JWT token expires login again"
       });
